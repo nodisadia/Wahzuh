@@ -1,33 +1,3 @@
-# Week 3 Lab: Log Analysis with CLI Tools (SSH Brute-Force Investigation)
-
-## Learning Outcomes
-By the end of this lab, you will be able to:
-
-- Use `grep` with regular expressions to detect authentication failures
-
-message.txt
-8 KB
-Image
-Here's a **GitHub-ready version** of Exercises 7-13 (Advanced Attack Detection) adapted for the **SSH brute-force investigation scenario**. This replaces SQL injection/XSS detection with SSH-specific attack patterns like dictionary attacks, backdoor attempts, and privilege escalation.
-
----
-
-```markdown
-## Part 4: Advanced Attack Detection (SSH-Specific Patterns)
-
-message.txt
-15 KB
-PsycHE [CAT],  — 7:50 PM
-# Week 3 Lab: Log Analysis with CLI Tools
-
-## Learning Outcomes
-By the end of this lab, you will be able to:
-
-- Use `grep` to search for specific patterns in log files  
-
-message.txt
-11 KB
-                                                                                                                                              
 # Week 3 Lab: Log Analysis with CLI Tools
 
 ## Learning Outcomes
