@@ -15,7 +15,6 @@ Set up an Ubuntu virtual machine in VirtualBox as the host for Wazuh SIEM. The V
 - Ubuntu 22.04 LTS ISO ([download](https://ubuntu.com/download/server))
 - 8 GB RAM available on host
 - 25 GB free disk space
-https://github.com/nodisadia/Wahzuh/blob/bb1eadbd00edf8ce8ef27829450c87e0330f5fca/lab-setup/picture/Screenshot%202026-05-16%20183157.png
 ![image alt ](https://github.com/nodisadia/Wahzuh/blob/bb1eadbd00edf8ce8ef27829450c87e0330f5fca/lab-setup/picture/Screenshot%202026-05-16%20183157.png)
 ---
 
@@ -27,6 +26,7 @@ https://github.com/nodisadia/Wahzuh/blob/bb1eadbd00edf8ce8ef27829450c87e0330f5fc
 4. ❌ Uncheck "Skip Unattended Installation"
 5. Click "Next"
 ```
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20183257.png)
 
 ## Step 2: Allocate Resources
 | Setting | Value |
@@ -34,6 +34,9 @@ https://github.com/nodisadia/Wahzuh/blob/bb1eadbd00edf8ce8ef27829450c87e0330f5fc
 | RAM | 8192 MB (8 GB) |
 | CPU | 2 cores |
 | Disk | 25 GB (Dynamically allocated) |
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20183444.png)
+![image alt](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20183730.png)
+![image alt](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20183830.png)
 
 ## Step 3: Configure Network
 ```bash
@@ -59,7 +62,27 @@ Attached to: Bridged (for Windows access)
 7. Skip featured snaps
 8. Click "Install"
 ```
-
+![image alt](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20184913.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20183908.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20184021.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185140.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185223.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185300.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185311.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185326.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185414.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185655.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185706.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185718.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185744.png)
+![image alt ]()
+![image alt ]()
+![image alt ]()
+![image alt ]()
+![image alt ]()
+![image alt ]()
+![image alt ]()
+![image alt ]()
 ## Step 5: First Boot
 ```bash
 1. Click "Reboot" when finished
@@ -74,6 +97,7 @@ ip a
 Look for IP address (e.g., `192.168.x.x`). Save this for PuTTY/WinSCP.
 
 ---
+![image alt ]()
 
 ## Verification Checklist
 - [ ] VM boots successfully
