@@ -1,25 +1,3 @@
-Nodi
-nodi_sadia__
-In a call
-
-PsycHE [CAT],  — 5:38 PM
-?????????????
-fsdhsdhsetjgfjrsse
-gh kfxi
-koiiiiiiiiiii
-amar sesh
-Nodi [CAT],  — 5:41 PM
-koi
-Nodi [CAT],  — 5:54 PM
-koi
-You missed a call from 
-PsycHE
- that lasted 3 minutes. — 7:22 PM
-PsycHE [CAT],  — 7:22 PM
-@Nodi
-Nodi
- started a call. — 7:31 PM
-PsycHE [CAT],  — 7:40 PM
 # Week 3 Lab: Log Analysis with CLI Tools (SSH Brute-Force Investigation)
 
 ## Learning Outcomes
