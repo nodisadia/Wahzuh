@@ -70,15 +70,15 @@ ip a | grep inet
 Windows paths:
 - Desktop: C:\Users\YourName\Desktop
 - Downloads: C:\Users\YourName\Downloads
-![image alt](https://github.com/nodisadia/Wahzuh/blob/4488c13a450f78a22af652d18ac4f3f6c08c1474/lab-setup/picture/Screenshot%202026-05-17%20141032.png)
-![image alt](https://github.com/nodisadia/Wahzuh/blob/4488c13a450f78a22af652d18ac4f3f6c08c1474/lab-setup/picture/Screenshot%202026-05-17%20141042.png)
-![image alt](https://github.com/nodisadia/Wahzuh/blob/4488c13a450f78a22af652d18ac4f3f6c08c1474/lab-setup/picture/Screenshot%202026-05-17%20141053.png)
+
 Ubuntu paths:
 - Home: /home/wazuh-user/
 - Config: /etc/
 - Logs: /var/log/
 ```
-
+![image alt](https://github.com/nodisadia/Wahzuh/blob/4488c13a450f78a22af652d18ac4f3f6c08c1474/lab-setup/picture/Screenshot%202026-05-17%20141032.png)
+![image alt](https://github.com/nodisadia/Wahzuh/blob/4488c13a450f78a22af652d18ac4f3f6c08c1474/lab-setup/picture/Screenshot%202026-05-17%20141042.png)
+![image alt](https://github.com/nodisadia/Wahzuh/blob/4488c13a450f78a22af652d18ac4f3f6c08c1474/lab-setup/picture/Screenshot%202026-05-17%20141053.png)
 ---
 
 ## Step 5: Transfer Files
