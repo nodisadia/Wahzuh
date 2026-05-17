@@ -1,1 +1,1 @@
-# Wahzuh
+# Wazuh
