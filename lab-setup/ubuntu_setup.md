@@ -15,7 +15,7 @@ Set up an Ubuntu virtual machine in VirtualBox as the host for Wazuh SIEM. The V
 - Ubuntu 22.04 LTS ISO ([download](https://ubuntu.com/download/server))
 - 8 GB RAM available on host
 - 25 GB free disk space
-
+https://github.com/nodisadia/Wahzuh/blob/bb1eadbd00edf8ce8ef27829450c87e0330f5fca/lab-setup/picture/Screenshot%202026-05-16%20183157.png
 ---
 
 ## Step 1: Create Virtual Machine
