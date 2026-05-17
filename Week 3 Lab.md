@@ -84,6 +84,8 @@ head -5 access.log
 ```
 
 ---
+![image alt](https://github.com/nodisadia/Threat-Model-Lab/blob/d47264013fb3016e9cb192718d03d2a9f9f87052/lab-setup/picture/Screenshot%202026-05-17%20145742.png)
+
 
 ## Part 2: Basic Log Analysis Commands (30 minutes)
 
@@ -520,3 +522,11 @@ awk '{sum += $10} END {print sum/1024/1024 " MB"}' access.log
 ```bash
 awk '{bytes[$1] += $10} END {for (ip in bytes) print ip, bytes[ip]/1024/1024 " MB"}' access.log | sort -k2 -rn | head -10
 ```
+![image alt](https://github.com/nodisadia/Threat-Model-Lab/blob/d47264013fb3016e9cb192718d03d2a9f9f87052/lab-setup/picture/Screenshot%202026-05-17%20145819.png)
+![image alt](https://github.com/nodisadia/Threat-Model-Lab/blob/af313b6d76245fc9de14c7cb9c2a7f9e20bf23f9/lab-setup/picture/Screenshot%202026-05-17%20150006.png)
+![image alt](https://github.com/nodisadia/Threat-Model-Lab/blob/af313b6d76245fc9de14c7cb9c2a7f9e20bf23f9/lab-setup/picture/Screenshot%202026-05-17%20150130.png)
+![image alt](https://github.com/nodisadia/Threat-Model-Lab/blob/af313b6d76245fc9de14c7cb9c2a7f9e20bf23f9/lab-setup/picture/Screenshot%202026-05-17%20150233.png)
+![image alt](https://github.com/nodisadia/Threat-Model-Lab/blob/af313b6d76245fc9de14c7cb9c2a7f9e20bf23f9/lab-setup/picture/Screenshot%202026-05-17%20150347.png)
+![image alt](https://github.com/nodisadia/Threat-Model-Lab/blob/af313b6d76245fc9de14c7cb9c2a7f9e20bf23f9/lab-setup/picture/Screenshot%202026-05-17%20150420.png)
+![image alt](https://github.com/nodisadia/Threat-Model-Lab/blob/af313b6d76245fc9de14c7cb9c2a7f9e20bf23f9/lab-setup/picture/Screenshot%202026-05-17%20150452.png)
+![image alt](https://github.com/nodisadia/Threat-Model-Lab/blob/af313b6d76245fc9de14c7cb9c2a7f9e20bf23f9/lab-setup/picture/Screenshot%202026-05-17%20150548.png)
