@@ -1,1 +1,96 @@
+Here's a clean, script-like format you can copy-paste directly into GitHub (Markdown). Just use it as your `README.md` or lab document.
 
+```markdown
+# Week 1 Lab: Installing Ubuntu on VirtualBox for Wazuh
+
+## Learning Outcomes
+- Create and configure a virtual machine in VirtualBox
+- Manually install Ubuntu Server/Desktop
+- Configure network settings (Bridged vs. NAT)
+- Enable OpenSSH server for remote access
+- Retrieve and document VM IP address
+
+## Objective
+Set up an Ubuntu virtual machine in VirtualBox as the host for Wazuh SIEM. The VM must be accessible from Windows via PuTTY and WinSCP.
+
+## Prerequisites
+- [VirtualBox](https://www.virtualbox.org/) installed
+- Ubuntu 22.04 LTS ISO ([download](https://ubuntu.com/download/server))
+- 8 GB RAM available on host
+- 25 GB free disk space
+
+---
+
+## Step 1: Create Virtual Machine
+```bash
+1. Open VirtualBox → Click "New"
+2. Name: Ubuntu-Wazuh
+3. ISO: Select your Ubuntu ISO
+4. ❌ Uncheck "Skip Unattended Installation"
+5. Click "Next"
+```
+
+## Step 2: Allocate Resources
+| Setting | Value |
+|---------|-------|
+| RAM | 8192 MB (8 GB) |
+| CPU | 2 cores |
+| Disk | 25 GB (Dynamically allocated) |
+
+## Step 3: Configure Network
+```bash
+Settings → Network → Adapter 1
+✅ Enable Network Adapter
+Attached to: Bridged (for Windows access)
+```
+> ⚠️ **Bridged** = Windows can reach Ubuntu directly.  
+> **NAT** = Requires port forwarding.
+
+## Step 4: Install Ubuntu
+```bash
+1. Start the VM
+2. Language: English
+3. Installation type: Minimal
+4. Storage: Entire disk
+5. Profile:
+   - Name: Wazuh User
+   - Computer: wazuh-server
+   - Username: wazuh-user
+   - Password: [choose strong password]
+6. ✅ CHECK "Install OpenSSH server"
+7. Skip featured snaps
+8. Click "Install"
+```
+
+## Step 5: First Boot
+```bash
+1. Click "Reboot" when finished
+2. Press Enter if asked to remove installation medium
+3. Log in with: wazuh-user / [your password]
+```
+
+## Step 6: Verify IP Address
+```bash
+ip a
+```
+Look for IP address (e.g., `192.168.x.x`). Save this for PuTTY/WinSCP.
+
+---
+
+## Verification Checklist
+- [ ] VM boots successfully
+- [ ] Can log in with `wazuh-user`
+- [ ] `ip a` shows an IP address
+- [ ] Can ping VM from Windows (optional)
+
+## Next Steps
+- Connect via PuTTY using the VM's IP address
+- Transfer files with WinSCP
+- Begin Wazuh installation
+
+---
+
+**Lab Complete ✅**
+```
+
+Just copy this whole block into a new file called `README.md` or `ubuntu-setup-lab.md` in your GitHub repo. It will render properly with formatting, tables, and code blocks.
