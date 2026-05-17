@@ -29,270 +29,546 @@ By the end of this lab, you will be able to:
 
 message.txt
 8 KB
-                                                                                                                                              
-# Week 3 Lab: Log Analysis with CLI Tools (SSH Brute-Force Investigation)
+Image
+Here's a **GitHub-ready version** of Exercises 7-13 (Advanced Attack Detection) adapted for the **SSH brute-force investigation scenario**. This replaces SQL injection/XSS detection with SSH-specific attack patterns like dictionary attacks, backdoor attempts, and privilege escalation.
+
+---
+
+```markdown
+## Part 4: Advanced Attack Detection (SSH-Specific Patterns)
+
+message.txt
+15 KB
+PsycHE [CAT],  — 7:50 PM
+# Week 3 Lab: Log Analysis with CLI Tools
 
 ## Learning Outcomes
 By the end of this lab, you will be able to:
 
-- Use `grep` with regular expressions to detect authentication failures
-- Utilize `awk` to extract timestamps, IP addresses, and usernames from logs
-- Employ `sed` to sanitize and transform log entries for reporting
-- Chain commands (`cut`, `sort`, `uniq`, `wc`, `head`, `tail`) for data aggregation
-- Identify brute-force attack patterns in `/var/log/auth.log`
-- Create a professional incident report with statistics and evidence
+- Use `grep` to search for specific patterns in log files  
+
+message.txt
+11 KB
+                                                                                                                                              
+# Week 3 Lab: Log Analysis with CLI Tools
+
+## Learning Outcomes
+By the end of this lab, you will be able to:
+
+- Use `grep` to search for specific patterns in log files  
+- Utilize `awk` to extract and manipulate specific fields from log data  
+- Employ `sed` to perform basic text transformations on log entries  
+- Chain command-line tools together to perform complex log analysis tasks  
+- Identify suspicious activity in web server logs  
+- Create professional log analysis reports  
 
 ## Objective
-Master Linux command-line tools to analyze authentication logs and detect a simulated SSH brute-force attack. You will generate a forensic report identifying attack sources, targeted usernames, and attack timelines.
+Master essential Linux command-line tools (`grep`, `awk`, `sed`, `cut`, `sort`, `uniq`) to parse and analyze log files for security investigations.
 
 ## Scenario
-You are a junior SOC analyst at CyberDefend Corp. Overnight, the intrusion detection system triggered an alert for "Multiple Failed SSH Logins" on a critical Ubuntu server. Your task is to analyze `/var/log/auth.log` (or a sample provided) to:
-
-- Determine if a brute-force attack occurred
-- Identify the attacker's IP address(es)
-- List which usernames were targeted
-- Calculate the attack duration and frequency
-- Provide evidence for the incident report
+You are a SOC analyst at SecureCorp investigating a potential web application attack. The security team has detected unusual traffic patterns to the company's web server. You have been provided with Apache web server access logs and need to analyze them to identify suspicious activity, potential attack vectors, and compromised systems.
 
 ## Prerequisites
 
-- Linux system (Ubuntu VM from Week 2, or any Debian-based distribution)
-- Basic familiarity with terminal commands
-- Sample log file (`auth.log` or simulated brute-force log)
-- Text editor for report writing
+- Linux system (Ubuntu VM from Week 2 lab, or Kali Linux)
+- Basic understanding of Apache log format
+- Text editor (nano, vim, or VS Code)
 
 ## Lab Duration
 Approximately 2-3 hours
 
 ---
 
-## Part 1: Understanding SSH Authentication Logs (15 minutes)
+## Part 1: Understanding Apache Log Format (15 minutes)
 
-### Step 1: Auth.log Format Overview
+### Step 1: Apache Combined Log Format
 
-On Ubuntu/Debian systems, SSH authentication events are logged to `/var/log/auth.log`. A typical failed SSH login looks like this:
-
-```
-Mar 10 04:32:15 ubuntu-server sshd[12456]: Failed password for root from 192.168.1.100 port 54321 ssh2
-```
-
-A successful login:
+Apache logs use the "Combined Log Format" by default:
 
 ```
-Mar 10 04:32:20 ubuntu-server sshd[12456]: Accepted password for john from 192.168.1.101 port 54322 ssh2
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
 ```
 
-Other important event types:
+Example log entry:
 
-| Event Type | Log Pattern |
-|------------|--------------|
-| Invalid user | `Invalid user` |
-| Failed password | `Failed password` |
-| Accepted password | `Accepted password` |
-| Connection closed | `Connection closed` |
-| Disconnected | `Disconnected` |
+```
+192.168.1.100 - - [10/Jan/2024:13:55:36 +0000] "GET /index.html HTTP/1.1" 200 2326 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+```
 
-### Step 2: Prepare Your Log File
+**Field breakdown:**
 
-Create a working directory and obtain a sample log:
+| Field | Position | Description | Example |
+|-------|----------|-------------|---------|
+| IP Address | $1 | Client IP address | 192.168.1.100 |
+| Identity | $2 | RFC 1413 identity (usually -) | - |
+| Username | $3 | HTTP auth username (usually -) | - |
+| Timestamp | $4 | Request timestamp | [10/Jan/2024:13:55:36 +0000] |
+| Request | $5-$7 | HTTP method, path, protocol | "GET /index.html HTTP/1.1" |
+| Status Code | $8 | HTTP response code | 200 |
+| Size | $9 | Response size in bytes | 2326 |
+| Referer | $10 | Referring URL | "-" |
+| User-Agent | $11+ | Client browser/tool | "Mozilla/5.0..." |
+
+### Step 2: Download Sample Log File
+
+Create a working directory:
 
 ```bash
-mkdir -p ~/soc-labs/week3-ssh
-cd ~/soc-labs/week3-ssh
+mkdir -p ~/soc-labs/week3
+cd ~/soc-labs/week3
 ```
 
-**Option 1 – Use real system log (if you have SSH failures):**
+Download sample log file:
 
 ```bash
-sudo cp /var/log/auth.log .
-sudo chown $USER:$USER auth.log
-```
+# Option 1: Use provided sample from repository
+cp /path/to/soc-training-program/Lab-Resources/Sample-Data/apache-access.log .
 
-**Option 2 – Download a simulated brute-force log:**
-
-```bash
-wget https://raw.githubusercontent.com/linux-audit/audit-documentation/main/sample-logs/auth-bruteforce.log -O auth.log
-```
-
-**Option 3 – Generate your own simulated log (if wget fails):**
-
-```bash
-cat > auth.log << 'EOF'
-Mar 10 04:15:22 server sshd[12345]: Failed password for root from 203.0.113.5 port 45012 ssh2
-Mar 10 04:15:25 server sshd[12346]: Failed password for admin from 203.0.113.5 port 45013 ssh2
-Mar 10 04:15:28 server sshd[12347]: Failed password for root from 203.0.113.5 port 45014 ssh2
-Mar 10 04:15:31 server sshd[12348]: Failed password for admin from 203.0.113.5 port 45015 ssh2
-Mar 10 04:15:34 server sshd[12349]: Failed password for root from 203.0.113.5 port 45016 ssh2
-Mar 10 04:15:37 server sshd[12350]: Failed password for ubuntu from 203.0.113.5 port 45017 ssh2
-Mar 10 04:16:02 server sshd[12351]: Failed password for root from 198.51.100.88 port 33001 ssh2
-Mar 10 04:16:05 server sshd[12352]: Failed password for root from 198.51.100.88 port 33002 ssh2
-Mar 10 04:16:08 server sshd[12353]: Failed password for root from 198.51.100.88 port 33003 ssh2
-Mar 10 04:20:30 server sshd[12400]: Accepted password for legitimate-user from 192.168.1.50 port 52001 ssh2
-EOF
+# Option 2: Generate sample log (if not available)
+wget https://raw.githubusercontent.com/elastic/examples/master/Common%20Data%20Formats/apache_logs/apache_logs -O access.log
 ```
 
 Verify the file:
 
 ```bash
-cat auth.log
+ls -lh access.log
+head -5 access.log
 ```
 
 ---
 
-## Part 2: Basic Log Analysis (30 minutes)
+## Part 2: Basic Log Analysis Commands (30 minutes)
 
-### Exercise 1: Count Total Authentication Events
+### Exercise 1: Count Total Requests
 
-**Question:** How many total authentication-related events are in the log?
+**Question:** How many total requests are in the log file?
 
 **Command:**
 
 ```bash
-wc -l auth.log
+wc -l access.log
 ```
 
 **Explanation:**
 - `wc` = word count command
-- `-l` = count lines (each line = one event)
+- `-l` = count lines
+- Each line = one request
 
-**Document:** Record the total number in your report.
+**Expected output:**
+
+```
+10000 access.log
+```
+
+**Document this:** Note the total number of requests in your report.
 
 ---
 
-### Exercise 2: Extract Failed Password Attempts
+### Exercise 2: Extract IP Addresses
 
-**Question:** How many failed password attempts occurred?
-
-**Command:**
-
-```bash
-grep "Failed password" auth.log | wc -l
-```
-
-**Explanation:**
-- `grep "Failed password"` = filter lines containing that exact phrase
-- `| wc -l` = count matching lines
-
-**Alternative using `-c` flag:**
-
-```bash
-grep -c "Failed password" auth.log
-```
-
-**Expected output (for sample):** `7`
-
----
-
-### Exercise 3: Identify Attacker IP Addresses
-
-**Question:** What are the unique IP addresses that generated failed logins?
+**Question:** How many unique IP addresses made requests?
 
 **Step-by-step approach:**
 
-1. Extract the IP address field (varies by log format – typically the 11th field or after "from"):
+1. Extract just the IP addresses (first field):
 
 ```bash
-grep "Failed password" auth.log | awk '{print $11}'
+awk '{print $1}' access.log | head -10
 ```
 
-> **Note:** Depending on your log format, the IP might be in `$11`, `$12`, or `$14`. Adjust as needed.
+**Explanation:**
+- `awk '{print $1}'` = print first field (IP address)
+- `| head -10` = show first 10 results
 
-2. Sort the IPs:
+2. Sort the IP addresses:
 
 ```bash
-grep "Failed password" auth.log | awk '{print $11}' | sort
+awk '{print $1}' access.log | sort | head -10
 ```
+
+**Explanation:**
+- `sort` = arrange in alphabetical/numerical order
+- This groups duplicate IPs together
 
 3. Remove duplicates:
 
 ```bash
-grep "Failed password" auth.log | awk '{print $11}' | sort -u
+awk '{print $1}' access.log | sort | uniq | head -10
 ```
 
-**Expected output (for sample):**
+**Explanation:**
+- `uniq` = remove adjacent duplicate lines
+- Must be used after `sort`
 
-```
-198.51.100.88
-203.0.113.5
+4. Count unique IPs:
+
+```bash
+awk '{print $1}' access.log | sort | uniq | wc -l
 ```
 
-**Document:** List all attacker IPs in your report.
+**Alternative (more efficient):**
+
+```bash
+awk '{print $1}' access.log | sort -u | wc -l
+```
+
+**Explanation:**
+- `sort -u` = sort and remove duplicates in one step
 
 ---
 
-### Exercise 4: Find Top Attackers (Frequency)
+### Exercise 3: Find Top Talkers
 
-**Question:** Which IP address attempted the most failed logins?
+**Question:** What are the top 10 most frequent IP addresses?
 
 **Command:**
 
 ```bash
-grep "Failed password" auth.log | awk '{print $11}' | sort | uniq -c | sort -rn | head -5
+awk '{print $1}' access.log | sort | uniq -c | sort -rn | head -10
 ```
 
-**Breakdown:**
+**Step-by-step breakdown:**
 
 | Command piece | Purpose |
 |---------------|---------|
-| `awk '{print $11}'` | Extract IP address |
-| `sort` | Group identical IPs together |
-| `uniq -c` | Count occurrences of each IP |
-| `sort -rn` | Sort by count (reverse/numerical) |
-| `head -5` | Show top 5 results |
+| `awk '{print $1}'` | Extract IP addresses |
+| `sort` | Sort them |
+| `uniq -c` | Count occurrences of each unique IP |
+| `sort -rn` | Sort by count (reverse numerical) |
+| `head -10` | Show top 10 |
 
-**Expected output (for sample):**
+**Expected output:**
 
 ```
-      5 203.0.113.5
-      3 198.51.100.88
+    523 192.168.1.100
+    412 10.0.0.50
+    387 172.16.0.25
+    ...
 ```
 
-**Analysis:** High frequency from a single IP indicates brute-force scanning.
+**Analysis:** IPs with high request counts could indicate:
+- Legitimate heavy users
+- Web scrapers/bots
+- Potential DDoS attacks
+- Compromised systems
 
 ---
 
-### Exercise 5: Identify Targeted Usernames
+### Exercise 4: Analyze HTTP Status Codes
 
-**Question:** Which usernames were most frequently targeted?
+**Question:** How many 404 (Not Found) errors occurred?
 
 **Command:**
 
 ```bash
-grep "Failed password" auth.log | awk '{print $9}' | sort | uniq -c | sort -rn
+grep " 404 " access.log | wc -l
 ```
 
-> **Note:** Adjust field number (`$9` or `$11`) based on your log format. In the sample, username is the 9th field (e.g., "for root" → `$9` = "root").
+**Explanation:**
+- `grep " 404 "` = search for lines containing " 404 " (with spaces to avoid matching 4040, etc.)
+- `wc -l` = count matching lines
 
-**Expected output (for sample):**
+**Better approach (using awk):**
+
+```bash
+awk '$9 == 404' access.log | wc -l
+```
+
+**Explanation:**
+- `$9 == 404` = match lines where 9th field (status code) equals 404
+
+**Analyze all status codes:**
+
+```bash
+awk '{print $9}' access.log | sort | uniq -c | sort -rn
+```
+
+**Expected output:**
 
 ```
-      5 root
-      2 admin
-      1 ubuntu
+   7523 200
+   1245 404
+    523 301
+    234 500
+    ...
 ```
-
-**Security Insight:** Attackers always try `root` first, then common admin names.
 
 ---
 
-## Part 3: Advanced Pattern Matching (45 minutes)
+### Exercise 5: Identify Suspicious URLs
 
-### Exercise 6: Detect Invalid User Attempts
-
-**Question:** How many attempts used non-existent usernames?
+**Question:** What are the top 5 requested URLs that resulted in a 404 error?
 
 **Command:**
 
 ```bash
-grep "Invalid user" auth.log | wc -l
+awk '$9 == 404 {print $7}' access.log | sort | uniq -c | sort -rn | head -5
 ```
 
-**View the actual invalid usernames:**
+**Step-by-step:**
 
-```bash
-grep "Invalid user" auth.log | awk '{print $8}' | sort | uniq -c
+| Command piece | Purpose |
+|---------------|---------|
+| `$9 == 404` | Filter for 404 errors |
+| `{print $7}` | Extract the URL (7th field) |
+| `sort \| uniq -c` | Count occurrences |
+| `sort -rn` | Sort by frequency |
+| `head -5` | Top 5 |
+
+**Expected output:**
+
+```
+     45 /admin/config.php
+     32 /wp-admin/
+     28 /.env
+     23 /phpMyAdmin/
+     19 /admin/
 ```
 
-**Explanation:** Attackers often try random usernames. A high number of invalid users suggests dictionary/brute-force attacks.
+**Security Analysis:**
+- `/admin/` paths = reconnaissance for admin panels
+- `/.env` = searching for exposed environment files
+- `/phpMyAdmin/` = looking for database management tools
+- These are typical attack patterns!
 
 ---
+
+## Part 3: Advanced Pattern Matching with grep (45 minutes)
+
+### Exercise 6: Detect Scanning Activity
+
+**Question:** How many requests were made by the user agent "Nikto"?
+
+**Background:** Nikto is a web vulnerability scanner. Its presence indicates security scanning (could be authorized or malicious).
+
+**Command:**
+
+```bash
+grep -i "nikto" access.log | wc -l
+```
+
+**Explanation:**
+- `grep -i` = case-insensitive search
+- Searches in the entire line (including User-Agent field)
+
+**Extract full details:**
+
+```bash
+grep -i "nikto" access.log | head -5
+```
+
+**Get unique IPs using Nikto:**
+
+```bash
+grep -i "nikto" access.log | awk '{print $1}' | sort -u
+```
+
+---
+
+### Exercise 7: Detect SQL Injection Attempts
+
+**Question:** Find potential SQL injection attempts in the logs.
+
+**Common SQL injection patterns:**
+- `' OR '1'='1`
+- `UNION SELECT`
+- `DROP TABLE`
+- `; --` (SQL comment)
+- `%27` (URL-encoded single quote)
+
+**Commands:**
+
+Search for SQL keywords:
+
+```bash
+grep -iE "(union|select|insert|update|delete|drop|exec|script)" access.log | wc -l
+```
+
+**Explanation:**
+- `-i` = case-insensitive
+- `-E` = extended regex
+- `|` = OR operator
+
+Search for encoded SQL:
+
+```bash
+grep -E "(%27|%20union|%20select)" access.log
+```
+
+Extract suspicious requests:
+
+```bash
+grep -iE "(union|select)" access.log | awk '{print $1, $7}' | head -10
+```
+
+Output shows: IP address and requested URL
+
+Count by IP:
+
+```bash
+grep -iE "(union|select)" access.log | awk '{print $1}' | sort | uniq -c | sort -rn
+```
+
+---
+
+### Exercise 8: Detect XSS Attempts
+
+**Question:** Find potential Cross-Site Scripting (XSS) attempts.
+
+**XSS patterns:**
+- `<script>`
+- `javascript:`
+- `onerror=`
+- `%3Cscript%3E` (URL-encoded)
+
+**Command:**
+
+```bash
+grep -iE "(<script|javascript:|onerror=|%3Cscript)" access.log
+```
+
+**Count XSS attempts:**
+
+```bash
+grep -iE "(<script|javascript:|onerror=|%3Cscript)" access.log | wc -l
+```
+
+**Identify attackers:**
+
+```bash
+grep -iE "(<script|javascript:|onerror=)" access.log | awk '{print $1}' | sort | uniq -c | sort -rn
+```
+
+---
+
+### Exercise 9: Detect Directory Traversal
+
+**Question:** Find directory traversal attempts.
+
+**Traversal patterns:**
+- `../`
+- `..%2F` (URL-encoded)
+- `....//`
+
+**Command:**
+
+```bash
+grep -E "(\.\./|\.\.%2[Ff])" access.log
+```
+
+**Count attempts:**
+
+```bash
+grep -E "(\.\./|\.\.%2[Ff])" access.log | wc -l
+```
+
+---
+
+## Part 4: Advanced Analysis with awk (45 minutes)
+
+### Exercise 10: Analyze Traffic by Time
+
+**Question:** What hours had the most traffic?
+
+**Command:**
+
+```bash
+awk '{print $4}' access.log | cut -d: -f2 | sort | uniq -c | sort -rn
+```
+
+**Step-by-step:**
+
+| Command piece | Purpose |
+|---------------|---------|
+| `awk '{print $4}'` | Extract timestamp field |
+| `cut -d: -f2` | Extract hour from timestamp (split by :, take 2nd field) |
+| `sort \| uniq -c` | Count per hour |
+| `sort -rn` | Sort by count |
+
+**Expected output:**
+
+```
+    1523 14
+    1245 13
+    1198 15
+    ...
+```
+
+**Analysis:** Unusual traffic spikes at odd hours (e.g., 3 AM) could indicate automated attacks.
+
+---
+
+### Exercise 11: Analyze Request Methods
+
+**Question:** What HTTP methods are being used?
+
+**Command:**
+
+```bash
+awk '{print $6}' access.log | tr -d '"' | sort | uniq -c | sort -rn
+```
+
+**Explanation:**
+- `awk '{print $6}'` = Extract method (GET, POST, etc.)
+- `tr -d '"'` = Remove quotes
+- Count and sort
+
+**Expected output:**
+
+```
+   8523 GET
+   1245 POST
+     45 HEAD
+     12 OPTIONS
+      3 PUT
+```
+
+**Security note:** Unusual methods (PUT, DELETE, TRACE) could indicate attack attempts.
+
+---
+
+### Exercise 12: Extract POST Requests
+
+**Question:** Extract all IP addresses that made POST requests.
+
+**Command:**
+
+```bash
+awk '$6 == "\"POST"' access.log | awk '{print $1}' | sort -u
+```
+
+**Or combined:**
+
+```bash
+awk '$6 == "\"POST" {print $1}' access.log | sort -u
+```
+
+**Get POST request details:**
+
+```bash
+awk '$6 == "\"POST" {print $1, $7, $9}' access.log | head -10
+```
+
+Output: IP, URL, Status Code
+
+---
+
+### Exercise 13: Calculate Bandwidth Usage
+
+**Question:** What is the total bandwidth used?
+
+**Command:**
+
+```bash
+awk '{sum += $10} END {print sum/1024/1024 " MB"}' access.log
+```
+
+**Explanation:**
+- `{sum += $10}` = Add up all bytes (field 10)
+- `END {print sum/1024/1024}` = Convert to MB and print
+
+**Bandwidth by IP:**
+
+```bash
+awk '{bytes[$1] += $10} END {for (ip in bytes) print ip, bytes[ip]/1024/1024 " MB"}' access.log | sort -k2 -rn | head -10
+```
