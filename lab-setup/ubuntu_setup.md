@@ -75,14 +75,14 @@ Attached to: Bridged (for Windows access)
 ![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185706.png)
 ![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185718.png)
 ![image alt ](https://github.com/nodisadia/Wahzuh/blob/df36fc158d0241aa5c4ae244405ad9ed0639fc89/lab-setup/picture/Screenshot%202026-05-16%20185744.png)
-![image alt ]()
-![image alt ]()
-![image alt ]()
-![image alt ]()
-![image alt ]()
-![image alt ]()
-![image alt ]()
-![image alt ]()
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/fd876375f599dbbe05cb94141464a654f227cf34/lab-setup/picture/Screenshot%202026-05-16%20185950.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/fd876375f599dbbe05cb94141464a654f227cf34/lab-setup/picture/Screenshot%202026-05-16%20190113.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/fd876375f599dbbe05cb94141464a654f227cf34/lab-setup/picture/Screenshot%202026-05-16%20190202.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/fd876375f599dbbe05cb94141464a654f227cf34/lab-setup/picture/Screenshot%202026-05-16%20190358.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/fd876375f599dbbe05cb94141464a654f227cf34/lab-setup/picture/Screenshot%202026-05-16%20190412.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/fd876375f599dbbe05cb94141464a654f227cf34/lab-setup/picture/Screenshot%202026-05-16%20190449.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/fd876375f599dbbe05cb94141464a654f227cf34/lab-setup/picture/Screenshot%202026-05-16%20192221.png)
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/fd876375f599dbbe05cb94141464a654f227cf34/lab-setup/picture/Screenshot%202026-05-16%20192347.png)
 ## Step 5: First Boot
 ```bash
 1. Click "Reboot" when finished
@@ -97,7 +97,7 @@ ip a
 Look for IP address (e.g., `192.168.x.x`). Save this for PuTTY/WinSCP.
 
 ---
-![image alt ]()
+![image alt ](https://github.com/nodisadia/Wahzuh/blob/fd876375f599dbbe05cb94141464a654f227cf34/lab-setup/picture/Screenshot%202026-05-16%20192753.png)
 
 ## Verification Checklist
 - [ ] VM boots successfully
